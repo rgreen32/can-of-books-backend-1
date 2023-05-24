@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 // bring in the Book model
-const Book = require('./models/Book.js');
+const Book = require('./models/book.js');
 
 // configure express middleware
 app.use(cors());
