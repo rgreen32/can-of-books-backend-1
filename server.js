@@ -48,4 +48,17 @@ app.post('/books', async (req, res) => {
   }
 });
 
+// Delete /books/:id
+// accepts an id parameter and deletes the corresponding book from the database. Returns the deleted book object as JSON.
+app.delete('/books/:id', async (req, res) => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL);
+    const book = await Book.findByIdAndDelete(req.params.id);
+    mongoose.disconnect();
+    res.json(book);
+  } catch (error) {
+    res.json(error.message);
+  }
+});
+
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
