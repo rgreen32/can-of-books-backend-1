@@ -14,11 +14,14 @@ const Book = require('./models/book.js');
 // configure express middleware
 app.use(cors());
 
+app.use(express.json());
+
 // configure port
 const PORT = process.env.PORT || 3001;
 
 
-// book route
+// GET /books 
+// returns an array of all book objects
 app.get('/books', async (req, res) => {
   
   try {
@@ -31,5 +34,18 @@ app.get('/books', async (req, res) => {
   }
 
 })
+
+// Post /books
+// accepts a JSON object representing a book and adds it to the database. Returns the added book object as JSON.
+app.post('/books', async (req, res) => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL);
+    const book = await Book.create(req.body);
+    mongoose.disconnect();
+    res.json(book);
+  } catch (error) {
+    res.json(error.message);
+  }
+});
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
