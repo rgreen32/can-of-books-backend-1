@@ -14,6 +14,7 @@ const Book = require('./models/book.js');
 // configure express middleware
 app.use(cors());
 
+// configure express to parse body as JSON
 app.use(express.json());
 
 // configure port
@@ -60,5 +61,21 @@ app.delete('/books/:id', async (req, res) => {
     res.json(error.message);
   }
 });
+
+// PUT /books/:id
+// accepts an id parameter and a JSON object representing a book. Updates the book with the matching id in the database with the new information. Returns the updated book object as JSON.
+app.put('/books/:id', async (req, res) => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL);
+    let description = req.body.description;
+    let status = req.body.status;
+    const book = await Book.findByIdAndUpdate(req.params.id, {description, status}, {new: true});
+    mongoose.disconnect();
+    res.json(book);
+  } catch (error) {
+    res.json(error.message);
+  }
+});
+
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
