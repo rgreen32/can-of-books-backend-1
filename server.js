@@ -16,6 +16,7 @@ app.use(cors());
 
 // configure express to parse body as JSON
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // configure port
 const PORT = process.env.PORT || 3001;
@@ -39,9 +40,10 @@ app.get('/books', async (req, res) => {
 // Post /books
 // accepts a JSON object representing a book and adds it to the database. Returns the added book object as JSON.
 app.post('/books', async (req, res) => {
+  const { title, description, status } = req.body;
   try {
     await mongoose.connect(process.env.DATABASE_URL);
-    const book = await Book.create(req.body);
+    const book = await Book.create({ title, description, status});
     mongoose.disconnect();
     res.json(book);
   } catch (error) {
@@ -65,11 +67,10 @@ app.delete('/books/:id', async (req, res) => {
 // PUT /books/:id
 // accepts an id parameter and a JSON object representing a book. Updates the book with the matching id in the database with the new information. Returns the updated book object as JSON.
 app.put('/books/:id', async (req, res) => {
+  const { description, status, title } = req.body;
   try {
     await mongoose.connect(process.env.DATABASE_URL);
-    let description = req.body.description;
-    let status = req.body.status;
-    const book = await Book.findByIdAndUpdate(req.params.id, {description, status}, {new: true});
+    const book = await Book.findByIdAndUpdate(req.params.id, {description, status, title}, {new: true});
     mongoose.disconnect();
     res.json(book);
   } catch (error) {
