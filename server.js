@@ -44,8 +44,9 @@ app.post('/books', async (req, res) => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
     const book = await Book.create({ title, description, status});
+    const books = await Book.find({});
     mongoose.disconnect();
-    res.json(book);
+    res.json(books);
   } catch (error) {
     res.json(error.message);
   }
@@ -57,8 +58,9 @@ app.delete('/books/:id', async (req, res) => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
     const book = await Book.findByIdAndDelete(req.params.id);
+    const books = await Book.find({});
     mongoose.disconnect();
-    res.json(book);
+    res.json(books);
   } catch (error) {
     res.json(error.message);
   }
@@ -71,8 +73,9 @@ app.put('/books/:id', async (req, res) => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
     const book = await Book.findByIdAndUpdate(req.params.id, {description, status, title}, {new: true});
+    const books = await Book.find({});
     mongoose.disconnect();
-    res.json(book);
+    res.json(books);
   } catch (error) {
     res.json(error.message);
   }
