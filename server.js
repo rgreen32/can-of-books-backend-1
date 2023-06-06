@@ -81,6 +81,7 @@ app.post("/books", async (req, res) => {
     const userEmail = response.data.email;
     await Book.create({ title, description, status, userEmail });
     const books = await Book.find({ userEmail });
+    console.log(books);
     res.json(books);
   } catch (error) {
     res.json(error.message);
