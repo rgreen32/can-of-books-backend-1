@@ -2,15 +2,16 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-mongoose.connect(
-  process.env.DATABASE_URL,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
 
 const Book = require("./models/book.js");
 
 async function seed() {
   try {
+    mongoose.connect(
+      process.env.DATABASE_URL,
+      { useNewUrlParser: true, useUnifiedTopology: true }
+    );
+    
     await Book.create({
       title: "The Great Gatsby",
       description:
