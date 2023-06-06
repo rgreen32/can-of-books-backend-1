@@ -53,13 +53,12 @@ app.get("/books", async (req, res) => {
     );
     const userEmail = response.data.email;
 
-    const books = await Book.find({ userEmail });
+    const books = await Book.find({ userEmail }) || [];
     console.log(books)
+    await mongoose.disconnect();
     res.json(books);
   } catch (error) {
     res.json(error.message);
-  } finally {
-    mongoose.disconnect();
   }
 });
 
@@ -79,14 +78,13 @@ app.post("/books", async (req, res) => {
       }
     );
     const userEmail = response.data.email;
-    await Book.create({ title, description, status, userEmail });
-    const books = await Book.find({ userEmail });
+    let book = await Book.create({ title, description, status, userEmail });
+    const books = await Book.find({ userEmail }) || [];
     console.log(books);
+    await mongoose.disconnect();
     res.json(books);
   } catch (error) {
     res.json(error.message);
-  } finally {
-    mongoose.disconnect();
   }
 });
 
