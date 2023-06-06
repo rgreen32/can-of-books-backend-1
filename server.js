@@ -6,8 +6,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const app = express();
 const axios = require("axios");
+const app = express();
 // const { expressjwt: jwt } = require("express-jwt");
 // const jwks = require("jwks-rsa");
 
@@ -54,7 +54,7 @@ app.get("/books", async (req, res) => {
     );
     const userEmail = response.data.email;
 
-    const books = await Book.find({ userEmail }) || [];
+    const books = await Book.find({ userEmail });
     console.log(books)
     await mongoose.disconnect();
     res.json(books);
@@ -80,7 +80,7 @@ app.post("/books", async (req, res) => {
     );
     const userEmail = response.data.email;
     let book = await Book.create({ title, description, status, userEmail });
-    const books = await Book.find({ userEmail }) || [];
+    const books = await Book.find({ userEmail });
     console.log(books);
     await mongoose.disconnect();
     res.json(books);
@@ -96,11 +96,10 @@ app.delete("/books/:id", async (req, res) => {
     await mongoose.connect(process.env.DATABASE_URL);
     const book = await Book.findByIdAndDelete(req.params.id);
     const books = await Book.find({});
+    mongoose.disconnect();
     res.json(books);
   } catch (error) {
     res.json(error.message);
-  } finally {
-    mongoose.disconnect();
   }
 });
 
