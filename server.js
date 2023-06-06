@@ -58,7 +58,7 @@ app.get("/books", async (req, res) => {
     await mongoose.disconnect();
     res.json(books);
   } catch (error) {
-    res.json(error.message);
+    res.json([{ title: "error from get", description: error.message }]);;
   }
 });
 
@@ -84,7 +84,7 @@ app.post("/books", async (req, res) => {
     await mongoose.disconnect();
     res.json(books);
   } catch (error) {
-    res.json(error.message);
+    res.json([{ title: "error from post", description: error.message }]);
   }
 });
 
