@@ -80,10 +80,10 @@ app.post("/books", async (req, res) => {
     );
     const userEmail = response.data.email;
     let book = await Book.create({ title, description, status, userEmail });
-    const books = await Book.find({ userEmail });
-    console.log(books);
+    // const books = await Book.find({ userEmail });
+    // console.log(books);
     await mongoose.disconnect();
-    res.json(books);
+    res.json(book);
   } catch (error) {
     res.json([{ title: "error from post", description: error.message }]);
   }
