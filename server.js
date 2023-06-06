@@ -7,6 +7,9 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
+const { expressjwt: jwt } = require('express-jwt')
+const jwks = require('jwks-rsa');
+
 
 // bring in the Book model
 const Book = require('./models/book.js');
@@ -18,6 +21,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const verifyJWT = jwt({
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: 'dev-trnqc5jxbp8gfsin.us.auth0.com/.well-known/jwks.json',
+  }),
+  audience: 'http://localhost:3001',
+  issuer: 'dev-trnqc5jxbp8gfsin.us.auth0.com/',
+  algorithms: ['RS256'],
+});
+
+app.use(verifyJWT);
+
 // configure port
 const PORT = process.env.PORT || 3001;
 
@@ -25,14 +42,23 @@ const PORT = process.env.PORT || 3001;
 // GET /books 
 // returns an array of all book objects
 app.get('/books', async (req, res) => {
-  
   try {
     await mongoose.connect(process.env.DATABASE_URL);
-    const books = await Book.find({});
-    mongoose.disconnect();
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const response = await axios.get('https://dev-trnqc5jxbp8gfsin.us.auth0.com/userinfo', {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userEmail = response.data.email;
+
+    const books = await Book.find({ userEmail});
+    
     res.json(books);
   } catch (error) {
     res.json(error.message);
+  } finally {
+    mongoose.disconnect();
   }
 
 })
