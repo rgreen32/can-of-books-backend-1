@@ -54,7 +54,7 @@ app.get("/books", async (req, res) => {
     const userEmail = response.data.email;
 
     const books = await Book.find({ userEmail });
-
+    console.log(books)
     res.json(books);
   } catch (error) {
     res.json(error.message);
