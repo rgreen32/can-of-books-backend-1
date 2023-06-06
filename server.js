@@ -20,19 +20,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const verifyJWT = jwt({
-  secret: jwks.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: "dev-trnqc5jxbp8gfsin.us.auth0.com/.well-known/jwks.json",
-  }),
-  audience: "http://localhost:3001",
-  issuer: "dev-trnqc5jxbp8gfsin.us.auth0.com/",
-  algorithms: ["RS256"],
-});
+// const verifyJWT = jwt({
+//   secret: jwks.expressJwtSecret({
+//     cache: true,
+//     rateLimit: true,
+//     jwksRequestsPerMinute: 5,
+//     jwksUri: "dev-trnqc5jxbp8gfsin.us.auth0.com/.well-known/jwks.json",
+//   }),
+//   audience: "http://localhost:3001",
+//   issuer: "dev-trnqc5jxbp8gfsin.us.auth0.com/",
+//   algorithms: ["RS256"],
+// });
 
-app.use(verifyJWT);
+// app.use(verifyJWT);
 
 // configure port
 const PORT = process.env.PORT || 3001;
