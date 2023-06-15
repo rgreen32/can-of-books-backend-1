@@ -43,19 +43,7 @@ const PORT = process.env.PORT || 3001;
 app.get("/books", async (req, res) => {
   try {
     await mongoose.connect(process.env.DATABASE_URL);
-    const accessToken = req.headers.authorization.split(" ")[1];
-    const response = await axios.get(
-      "https://dev-trnqc5jxbp8gfsin.us.auth0.com/userinfo",
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    const userEmail = response.data.email;
-
-    const books = await Book.find({ userEmail });
-    console.log(books)
+    const books = await Book.find();
     await mongoose.disconnect();
     res.json(books);
   } catch (error) {
@@ -69,19 +57,7 @@ app.post("/books", async (req, res) => {
   const { title, description, status } = req.body;
   try {
     await mongoose.connect(process.env.DATABASE_URL);
-    const accessToken = req.headers.authorization.split(" ")[1];
-    const response = await axios.get(
-      "https://dev-trnqc5jxbp8gfsin.us.auth0.com/userinfo",
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    const userEmail = response.data.email;
-    let book = await Book.create({ title, description, status, userEmail });
-    // const books = await Book.find({ userEmail });
-    // console.log(books);
+    let book = await Book.create({ title, description, status });
     await mongoose.disconnect();
     res.json(book);
   } catch (error) {
